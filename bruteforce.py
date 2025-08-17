@@ -18,12 +18,6 @@ def bruteforce(actions):
     return best_returns
 
 
-def sort_actions(actions):
-    sorted_actions = sorted(actions, key=lambda action: action.profit_percent)
-    for action in sorted_actions:
-        print(f"{action.name}: {action.profit_percent}")
-
-
 def transform_to_dict(best):
     best_dict = {}
     actions = {}
@@ -44,7 +38,6 @@ def main():
     best = bruteforce(actions)
     best_dict = transform_to_dict(best)
     data_manager.save(best_dict)
-    sort_actions(actions)
 
 
 main()
