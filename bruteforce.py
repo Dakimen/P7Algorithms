@@ -2,6 +2,7 @@ from action import initialise_actions
 from csv_reader import get_raw_actions
 import itertools
 from data_manager import DataManager
+import time
 
 def bruteforce(actions):
     all_combinations = []
@@ -10,11 +11,12 @@ def bruteforce(actions):
             if sum(each.price for each in combination) <= 500:
                 all_combinations.append(combination)
     best_returns = all_combinations[0]
+    best_returns_value = sum(each.profit_value for each in best_returns)
     for combination in all_combinations:
-        best_returns_value = sum(each.profit_value for each in best_returns)
         combination_value = sum(each.profit_value for each in combination)
         if combination_value > best_returns_value:
             best_returns = combination
+            best_returns_value = combination_value
     return best_returns
 
 
@@ -32,12 +34,14 @@ def transform_to_dict(best):
 
 
 def main():
+    start_time = time.time()
     data_manager = DataManager()
     raw_actions = get_raw_actions()
     actions = initialise_actions(raw_actions)
     best = bruteforce(actions)
     best_dict = transform_to_dict(best)
     data_manager.save(best_dict)
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
 main()
