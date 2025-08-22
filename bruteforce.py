@@ -8,15 +8,16 @@ def bruteforce(actions):
     all_combinations = []
     for r in range(1, len(actions) + 1):
         for combination in itertools.combinations(actions, r):
-            if sum(each.price for each in combination) <= 500:
-                all_combinations.append(combination)
+            all_combinations.append(combination)
     best_returns = all_combinations[0]
-    best_returns_value = sum(each.profit_value for each in best_returns)
+    best_returns_value = 0
     for combination in all_combinations:
-        combination_value = sum(each.profit_value for each in combination)
-        if combination_value > best_returns_value:
-            best_returns = combination
-            best_returns_value = combination_value
+        total_price = sum(each.price for each in combination)
+        if total_price <= 500:
+            combination_value = sum(each.profit_value for each in combination)
+            if combination_value > best_returns_value:
+                best_returns = combination
+                best_returns_value = combination_value
     return best_returns
 
 
