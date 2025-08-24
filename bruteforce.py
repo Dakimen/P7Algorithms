@@ -23,14 +23,14 @@ def bruteforce(actions):
 
 def transform_to_dict(best):
     best_dict = {}
-    actions = {}
+    actions = []
     n = 1
     for action in best:
-        actions[f"Action{n}"] = action.to_dict()
-        n = n + 1
+        actions.append(action.name)
     best_dict["Actions"] = actions
     best_dict["Cost"] = sum(each.price for each in best)
     best_dict["Returns"] = sum(each.profit_value for each in best)
+    best_dict["Solution"] = "Bruteforce"
     return best_dict
 
 
