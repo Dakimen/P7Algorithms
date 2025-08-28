@@ -15,7 +15,7 @@ def optimized(actions, budget=500):
                 new_profit = profit + action.profit_value
                 new_entries.append((new_cost, new_profit, path + [action.name]))
         combined = dp + new_entries
-        combined.sort(key=lambda x: (x[0], x[-1]))
+        combined.sort(key=lambda x: (x[0], -x[1]))
         new_dp = []
         max_profit_so_far = -1.0
         for cost, profit, path in combined:
