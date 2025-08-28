@@ -10,7 +10,7 @@ class Action:
     profit_percent (int or float): action profit after two years.
     profit_value (int or float): action's profit in true numbers.
     """
-    def __init__(self, action_name, action_price, action_2_year_profit):
+    def __init__(self, action_name, action_price, action_2_year_profit=None, profit_value=None):
         """Initialise action class.
         Args:
         name (string).
@@ -20,8 +20,11 @@ class Action:
         self.name = action_name
         self.price = action_price
         self.profit_percent = action_2_year_profit
-        one_percent_of_value = self.price / 100
-        self.profit_value = one_percent_of_value * self.profit_percent
+        if action_2_year_profit is not None:
+            one_percent_of_value = self.price / 100
+            self.profit_value = one_percent_of_value * self.profit_percent
+        elif profit_value is not None:
+            self.profit_value = profit_value
 
     def to_dict(self):
         """Return dictionary of this action's data."""
@@ -34,7 +37,7 @@ class Action:
         return action_dictionary
 
 
-def initialise_actions(raw_actions):
+def initialise_actions(raw_actions, fieldname):
     """Initialise action objects from raw dictionaries.
     
     Args:
@@ -44,9 +47,19 @@ def initialise_actions(raw_actions):
         'benefit' (int)
     """
     actions = []
-    for raw_action in raw_actions:
-        new_action = Action(raw_action["name"],
-                            raw_action["price"],
-                            raw_action["benefit"])
-        actions.append(new_action)
-    return actions
+    if fieldname == "Benefit":
+        for raw_action in raw_actions:
+            new_action = Action(raw_action["name"],
+                                raw_action["price"],
+                                raw_action["Benefit"])
+            actions.append(new_action)
+        return actions
+    elif fieldname == "profit":
+        for raw_action in raw_actions:
+            new_action = Action(raw_action["name"],
+                                raw_action["price"],
+                                None,
+                                raw_action[f"{fieldname}"])
+            actions.append(new_action)
+        print(f"{actions[0].name}, {actions[0].price}, {actions[0].profit_value}")
+        return actions

@@ -37,8 +37,8 @@ def transform_to_dict(best):
 def main():
     start_time = time.time()
     data_manager = DataManager()
-    raw_actions = get_raw_actions()
-    actions = initialise_actions(raw_actions)
+    raw_actions, fieldname = get_raw_actions()
+    actions = initialise_actions(raw_actions, fieldname)
     best = bruteforce(actions)
     best_dict = transform_to_dict(best)
     data_manager.save(best_dict)

@@ -1,17 +1,33 @@
 import csv
 
 
-def get_raw_actions():
-    with open("actions.csv", "r", newline='') as csvfile:
+def get_raw_actions(filename="actions.csv"):
+    with open(f"{filename}", "r", newline='') as csvfile:
         dict_reader = csv.DictReader(csvfile)
+        column_names = dict_reader.fieldnames
+        name = column_names[0]
+        profits = column_names[2]
         actions = []
         for each in dict_reader:
-            benefit = each["Benefit"]
-            benefit = benefit.split("%")
+            benefit = each[f"{profits}"]
+            price = each[f"{column_names[1]}"]
+            percent = "%"
+            dot = "."
+            if percent in benefit:
+                benefit = benefit.split("%")
+                benefit = benefit[0]
+            if dot in benefit:
+                benefit = float(benefit)
+            else:
+                benefit = int(benefit)
+            if dot in price:
+                price = float(price)
+            else:
+                price = int(price)
             action = {
-                "name": each["Actions #"],
-                "price": int(each["Price"]),
-                "benefit": int(benefit[0])
+                "name": each[f"{name}"],
+                "price": price,
+                f"{profits}": benefit
                 }
             actions.append(action)
-        return actions
+        return (actions, profits)

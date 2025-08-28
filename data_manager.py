@@ -11,7 +11,16 @@ class PrettyJSONStorage(JSONStorage):
 class DataManager:
     """Data manager class for TinyDB database."""
     def __init__(self):
-        self.best_result = TinyDB("best_value.json", storage=PrettyJSONStorage)
+        self.best_value = TinyDB("best_value.json", storage=PrettyJSONStorage)
+        self.data_set1 = TinyDB("data_set1.json", storage=PrettyJSONStorage)
+        self.data_set2 = TinyDB("data_set2.json", storage=PrettyJSONStorage)
     
-    def save(self, result):
-        self.best_result.insert(result)
+    def save(self, result, storage="best_value.json"):
+        if storage == "best_value.json":
+            self.best_value.insert(result)
+        elif storage == "data_set1.json":
+            self.data_set1.insert(result)
+        elif storage == "data_set2.json":
+            self.data_set2.insert(result)
+        else:
+            raise ValueError("Passed storage config doesn't exist")
