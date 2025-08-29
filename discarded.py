@@ -2,21 +2,24 @@ from functools import lru_cache
 
 
 def optimized_discarded1(actions, budget=500):
-    dp = {0: (0, [])}
+    dp = {0: 0}
 
     for action in actions:
-        profit = int(round(action.profit_value * 100))
+        profit = action.profit_value * 100
         next_dp = dp.copy()
-        for cost, (total_profit, path) in dp.items():
-            new_cost = cost + action.price
+        for cost, total_profit in dp.items():
+            action_cost = action.price * 100
+            new_cost = cost + action_cost
             if new_cost <= budget:
                 new_profit = total_profit + profit
-                if new_cost not in next_dp or new_profit > next_dp[new_cost][0]:
-                    next_dp[new_cost] = (new_profit, path + [action.name])
+                if new_cost not in next_dp or new_profit > next_dp[new_cost]:
+                    next_dp[new_cost] = new_profit
         dp = next_dp
 
-    best_cost, (best_profit, best_path) = max(dp.items(), key=lambda x: x[0])
-    best = (best_cost, best_profit / 100, best_path, "optimized solution 1")
+    best_cost, best_profit = max(dp.items(), key=lambda x: x[0])
+    best_cost = best_cost / 100
+    best_profit = best_profit / 100
+    best = (best_cost, best_profit, "optimized solution 1")
     return best
 
 
@@ -44,4 +47,26 @@ def optimized_discarded2(actions, budget=500):
 
     best_profit, best_path, best_price = loop(0, budget)
     best = (best_price, best_profit, best_path, "optimized solution3")
+    return best
+
+def optimized(actions, budget=500):
+    dp = [(0, 0.0, [])]
+    for action in actions:
+        new_entries = []
+        for cost, profit, path in dp:
+            new_cost = cost + action.price
+            if new_cost <= budget:
+                new_profit = profit + action.profit_value
+                new_entries.append((new_cost, new_profit, path + [action.name]))
+        combined = dp + new_entries
+        combined.sort(key=lambda x: (x[0], -x[1]))
+        new_dp = []
+        max_profit_so_far = -1.0
+        for cost, profit, path in combined:
+            if profit > max_profit_so_far:
+                new_dp.append((cost, profit, path))
+                max_profit_so_far = profit
+        dp = new_dp
+    best_cost, best_profit, best_path = max(dp, key=lambda x: x[1])
+    best = (best_cost, best_profit, best_path, "optimized solution 2")
     return best

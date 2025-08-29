@@ -5,35 +5,33 @@ import time
 from input import get_user_input
 
 
-def optimized(actions, budget=500):
-    dp = [(0, 0.0, [])]
+def optimized_discarded1(actions, budget=500):
+    dp = {0: 0}
+
     for action in actions:
-        new_entries = []
-        for cost, profit, path in dp:
-            new_cost = cost + action.price
-            if new_cost <= budget:
-                new_profit = profit + action.profit_value
-                new_entries.append((new_cost, new_profit, path + [action.name]))
-        combined = dp + new_entries
-        combined.sort(key=lambda x: (x[0], -x[1]))
-        new_dp = []
-        max_profit_so_far = -1.0
-        for cost, profit, path in combined:
-            if profit > max_profit_so_far:
-                new_dp.append((cost, profit, path))
-                max_profit_so_far = profit
-        dp = new_dp
-    best_cost, best_profit, best_path = max(dp, key=lambda x: x[1])
-    best = (best_cost, best_profit, best_path, "optimized solution 2")
+        profit = action.profit_value * 100
+        next_dp = dp.copy()
+        for cost, total_profit in dp.items():
+            action_cost = action.price * 100
+            new_cost = cost + action_cost
+            if new_cost <= budget * 100:
+                new_profit = total_profit + profit
+                if new_cost not in next_dp or new_profit > next_dp[new_cost]:
+                    next_dp[new_cost] = new_profit
+        dp = next_dp
+
+    best_cost, best_profit = max(dp.items(), key=lambda x: x[1])
+    best_cost = best_cost / 100
+    best_profit = best_profit / 100
+    best = (best_cost, best_profit, "optimized solution 1")
     return best
 
 
 def transform_to_dict(best):
     best_dict = {}
-    best_dict["Actions"] = best[2]
     best_dict["Cost"] = best[0]
     best_dict["Returns"] = best[1]
-    best_dict["Solution"] = best[3]
+    best_dict["Solution"] = best[2]
     return best_dict
 
 
@@ -45,7 +43,7 @@ def main():
     raw_actions, fieldname = get_raw_actions(file)
     actions = initialise_actions(raw_actions, fieldname)
     start_time = time.time()
-    best2 = optimized(actions)
+    best2 = optimized_discarded1(actions)
     best_dict2 = transform_to_dict(best2)
     data_manager.save(best_dict2, storage)
     print("--- %s seconds ---" % (time.time() - start_time))
