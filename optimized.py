@@ -3,24 +3,24 @@ This is the optimized algorithm module for calculating best profits from a datas
 """
 
 import time
-from action import initialise_actions
 from csv_reader import get_raw_actions
 from data_manager import DataManager
 from input import get_user_input
+from actions import convert_actions
 
 
 def optimized(actions, budget=500, scale=100):
     """Optimized algorithm for best profit calculation.
     Args:
-    actions: array of action objects with price and profit_value attributes.
+    actions: array of action dictionaries with price and profit keys.
     budget=500: int or float.
     scale=100: int, multiple of 10, used to fine-tune precision.
     """
-    nonnegatives = [a for a in actions if a.price >= 0]
-    negatives = [a for a in actions if a.price < 0]
-    base_profit = sum(a.profit_value for a in negatives) * scale
-    extra_budget = sum(-a.price for a in negatives) * scale
-    price_profit_pair = ((int(a.price * scale), int(a.profit_value * scale)) for a in nonnegatives)
+    nonnegatives = [a for a in actions if a["price"] >= 0]
+    negatives = [a for a in actions if a["price"] < 0]
+    base_profit = sum(a["profit"] for a in negatives) * scale
+    extra_budget = sum(-a["price"] for a in negatives) * scale
+    price_profit_pair = ((int(a["price"] * scale), int(a["profit"] * scale)) for a in nonnegatives)
     budget = int(extra_budget + (budget * scale))
 
     dp = [0] * (budget + 1)
@@ -47,7 +47,7 @@ def main():
     storage_names = ["best_value.json", "data_set1.json", "data_set2.json"]
     file, storage = get_user_input(filenames, storage_names)
     raw_actions, fieldname = get_raw_actions(file)
-    actions = initialise_actions(raw_actions, fieldname)
+    actions = convert_actions(raw_actions, fieldname)
     start_time = time.time()
     best2 = optimized(actions)
     best_dict2 = transform_to_dict(best2)
