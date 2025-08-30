@@ -1,8 +1,20 @@
+"""csv reader module
+Functions:
+    get_raw_actions(filename='actions.csv'):
+    Transform csv file data into an array of dictionaries.
+        Args:
+            filename: stringified name of file to read.
+"""
+
 import csv
 
 
 def get_raw_actions(filename="actions.csv"):
-    with open(f"{filename}", "r", newline='') as csvfile:
+    """Transform csv file data into an array of dictionaries.
+    Args:
+    filename: stringified name of file to read.
+    """
+    with open(f"{filename}", "r", newline='', encoding="utf-8") as csvfile:
         dict_reader = csv.DictReader(csvfile)
         column_names = dict_reader.fieldnames
         name = column_names[0]

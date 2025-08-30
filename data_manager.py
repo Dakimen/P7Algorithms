@@ -1,4 +1,17 @@
-from tinydb import Query, TinyDB
+"""Data manager for writing best profit values into tinydb storage.
+classes:
+PrettyJSONStorage: Class modifying indent value of JSONStorage to 4 in order to make it prettier.
+
+DataManager: Data manager class for TinyDB database.
+Methods:
+save():
+    Save results to the database based on indicated storage file.
+    Args:
+        result: dictionary
+        storage=best_value.json: string containing the name of the destination file.
+"""
+
+from tinydb import TinyDB
 from tinydb.storages import JSONStorage
 
 class PrettyJSONStorage(JSONStorage):
@@ -16,6 +29,11 @@ class DataManager:
         self.data_set2 = TinyDB("data_set2.json", storage=PrettyJSONStorage)
     
     def save(self, result, storage="best_value.json"):
+        """Save results to the database based on indicated storage file.
+        Args:
+        result: dictionary
+        storage=best_value.json: string containing the name of the destination file.
+        """
         if storage == "best_value.json":
             self.best_value.insert(result)
         elif storage == "data_set1.json":

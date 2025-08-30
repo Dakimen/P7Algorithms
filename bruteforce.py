@@ -1,10 +1,15 @@
+""""Bruteforce module."""
+
+import time
+import itertools
 from action import initialise_actions
 from csv_reader import get_raw_actions
-import itertools
 from data_manager import DataManager
-import time
 
 def bruteforce(actions):
+    """Bruteforce algorithm.
+    Args:
+    actions: array of action class instances."""
     all_combinations = []
     for r in range(1, len(actions) + 1):
         for combination in itertools.combinations(actions, r):
@@ -22,9 +27,12 @@ def bruteforce(actions):
 
 
 def transform_to_dict(best):
+    """Transform bruteforce results into a dictionary.
+    Args:
+    best: combination of actions generate by bruteforce().
+    """
     best_dict = {}
     actions = []
-    n = 1
     for action in best:
         actions.append(action.name)
     best_dict["Actions"] = actions
@@ -35,6 +43,7 @@ def transform_to_dict(best):
 
 
 def main():
+    """Main function"""
     start_time = time.time()
     data_manager = DataManager()
     raw_actions, fieldname = get_raw_actions()
@@ -42,7 +51,7 @@ def main():
     best = bruteforce(actions)
     best_dict = transform_to_dict(best)
     data_manager.save(best_dict)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print(f"{time.time() - start_time} seconds")
 
 
 main()

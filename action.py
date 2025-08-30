@@ -26,16 +26,6 @@ class Action:
         elif profit_value is not None:
             self.profit_value = profit_value
 
-    def to_dict(self):
-        """Return dictionary of this action's data."""
-        action_dictionary = {
-            "name": self.name,
-            "price": self.price,
-            "profit_percent": self.profit_percent,
-            "profit_value": self.profit_value
-        }
-        return action_dictionary
-
 
 def initialise_actions(raw_actions, fieldname):
     """Initialise action objects from raw dictionaries.
@@ -54,12 +44,12 @@ def initialise_actions(raw_actions, fieldname):
                                 raw_action["Benefit"])
             actions.append(new_action)
         return actions
-    elif fieldname == "profit":
+    if fieldname == "profit":
         for raw_action in raw_actions:
             new_action = Action(raw_action["name"],
                                 raw_action["price"],
                                 None,
                                 raw_action[f"{fieldname}"])
             actions.append(new_action)
-        print(f"{actions[0].name}, {actions[0].price}, {actions[0].profit_value}")
         return actions
+    raise ValueError(f"No case for this fieldname: {fieldname}")
