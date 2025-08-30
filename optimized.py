@@ -5,7 +5,7 @@ This is the optimized algorithm module for calculating best profits from a datas
 import time
 from csv_reader import get_raw_actions
 from data_manager import DataManager
-from input import get_user_input
+from input_output import get_user_input
 from actions import convert_actions
 
 
@@ -44,7 +44,7 @@ def main():
     """Main function"""
     data_manager = DataManager()
     filenames = ["actions.csv", "actions1.csv", "actions2.csv"]
-    storage_names = ["best_value.json", "data_set1.json", "data_set2.json"]
+    storage_names = data_manager.get_storage()
     file, storage = get_user_input(filenames, storage_names)
     raw_actions, fieldname = get_raw_actions(file)
     actions = convert_actions(raw_actions, fieldname)

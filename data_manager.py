@@ -27,7 +27,7 @@ class DataManager:
         self.best_value = TinyDB("best_value.json", storage=PrettyJSONStorage)
         self.data_set1 = TinyDB("data_set1.json", storage=PrettyJSONStorage)
         self.data_set2 = TinyDB("data_set2.json", storage=PrettyJSONStorage)
-    
+
     def save(self, result, storage="best_value.json"):
         """Save results to the database based on indicated storage file.
         Args:
@@ -42,3 +42,8 @@ class DataManager:
             self.data_set2.insert(result)
         else:
             raise ValueError("Passed storage config doesn't exist")
+
+    def get_storage(self):
+        """Get all available storage files."""
+        storages = ["best_value.json", "data_set1.json", "data_set2.json"]
+        return storages

@@ -1,4 +1,4 @@
-"""User input module.
+"""Input-output module.
 Functions:
     get_user_input(filenames, storage_names):
     Get user input on which files to treat and where to save the results
