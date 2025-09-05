@@ -13,7 +13,7 @@ def convert_actions(raw_actions, fieldname):
     actions = []
     if fieldname == "Benefit":
         for raw_action in raw_actions:
-            profit = (raw_action["price"] * raw_action["Benefit"]) / 100
+            profit = raw_action["price"] * (raw_action["Benefit"] / 100)
             new_action = {
                 "price": raw_action["price"],
                 "profit": profit

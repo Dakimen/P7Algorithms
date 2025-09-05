@@ -9,20 +9,20 @@ from actions import convert_actions
 def bruteforce(actions):
     """Bruteforce algorithm.
     Args:
-    actions: array of action class instances."""
-    all_combinations = []
+    actions: array of dictionaries.
+    """
+    all_profits = sum(each["profit"] for each in actions)
+    print(all_profits)
+    best_returns_value = 0
+    best_returns = []
     for r in range(1, len(actions) + 1):
         for combination in itertools.combinations(actions, r):
-            all_combinations.append(combination)
-    best_returns = all_combinations[0]
-    best_returns_value = 0
-    for combination in all_combinations:
-        total_price = sum(each["price"] for each in combination)
-        if total_price <= 500:
-            combination_value = sum(each["profit"] for each in combination)
-            if combination_value > best_returns_value:
-                best_returns = combination
-                best_returns_value = combination_value
+            total_price = sum(each["price"] for each in combination)
+            if total_price <= 500:
+                combination_value = sum(each["profit"] for each in combination)
+                if combination_value > best_returns_value:
+                    best_returns = combination
+                    best_returns_value = combination_value
     return best_returns
 
 
