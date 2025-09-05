@@ -9,27 +9,31 @@ from input_output import get_user_input
 from actions import convert_actions
 
 
-def optimized(actions, budget=500, scale=100):
+def optimized(actions, budget=500):
     """Optimized algorithm for best profit calculation.
     Args:
     actions: array of action dictionaries with price and profit keys.
     budget=500: int or float.
-    scale=100: int, multiple of 10, used to fine-tune precision.
+    Returns: int of best possible profits with the given budget.
     """
-    nonnegatives = [a for a in actions if a["price"] >= 0]
-    negatives = [a for a in actions if a["price"] < 0]
-    base_profit = sum(a["profit"] for a in negatives) * scale
-    extra_budget = sum(-a["price"] for a in negatives) * scale
-    price_profit_pair = ((int(a["price"] * scale), int(a["profit"] * scale)) for a in nonnegatives)
-    budget = int(extra_budget + (budget * scale))
+    nonnegatives = [a for a in actions if a["price"] > 0]
+    profits = [a["profit"] for a in nonnegatives]
+    prices = [round(a["price"]) for a in nonnegatives]
+    n = len(nonnegatives)
+    dp = [[0 for _ in range(budget + 1)] for _ in range(n + 1)]
+    for i in range(n + 1):
+        for j in range(budget + 1):
+            if i == 0 or j == 0:
+                dp[i][j] = 0
+            else:
+                pick = 0
+                if prices[i - 1] <= j:
+                    pick = profits[i - 1] + dp[i - 1][j - prices[i - 1]]
+                not_pick = dp[i - 1][j]
 
-    dp = [0] * (budget + 1)
+                dp[i][j] = max(pick, not_pick)
 
-    for price, profit in price_profit_pair:
-        for j in range(budget, price - 1, -1):
-            dp[j] = max(dp[j], dp[j - price] + profit)
-    best = max(dp)
-    return (best + base_profit) / scale
+    return dp[n][budget]
 
 
 def transform_to_dict(best):

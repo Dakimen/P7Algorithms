@@ -22,9 +22,11 @@ def convert_actions(raw_actions, fieldname):
         return actions
     if fieldname == "profit":
         for raw_action in raw_actions:
+            profit = raw_action["price"] * (raw_action["profit"] / 100)
             new_action = {
                 "price": raw_action["price"],
-                "profit": raw_action["profit"]
+                #"profit": raw_action["profit"]
+                "profit": profit
                 }
             actions.append(new_action)
         return actions
