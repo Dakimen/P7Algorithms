@@ -16,22 +16,21 @@ def optimized(actions, budget=500):
     budget=500: int or float.
     Returns: int of best possible profits with the given budget.
     """
+    scale = 100
     nonnegatives = [a for a in actions if a["price"] > 0]
     profits = [a["profit"] for a in nonnegatives]
-    prices = [round(a["price"]) for a in nonnegatives]
+    prices = [round(a["price"] * scale) for a in nonnegatives]
     n = len(nonnegatives)
+    budget = int(budget * scale)
     dp = [[0 for _ in range(budget + 1)] for _ in range(n + 1)]
     for i in range(n + 1):
         for j in range(budget + 1):
-            if i == 0 or j == 0:
-                dp[i][j] = 0
-            else:
-                pick = 0
-                if prices[i - 1] <= j:
-                    pick = profits[i - 1] + dp[i - 1][j - prices[i - 1]]
-                not_pick = dp[i - 1][j]
+            pick = 0
+            if prices[i - 1] <= j:
+                pick = profits[i - 1] + dp[i - 1][j - prices[i - 1]]
+            not_pick = dp[i - 1][j]
 
-                dp[i][j] = max(pick, not_pick)
+            dp[i][j] = max(pick, not_pick)
 
     return dp[n][budget]
 
@@ -53,9 +52,9 @@ def main():
     raw_actions, fieldname = get_raw_actions(file)
     actions = convert_actions(raw_actions, fieldname)
     start_time = time.time()
-    best2 = optimized(actions)
-    best_dict2 = transform_to_dict(best2)
-    data_manager.save(best_dict2, storage)
+    best = optimized(actions)
+    best_dict = transform_to_dict(best)
+    data_manager.save(best_dict, storage)
     print(f"{time.time() - start_time} seconds")
 
 main()
